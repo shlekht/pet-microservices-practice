@@ -35,7 +35,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/payments", status_code=status.HTTP_200_OK)
-async def get_all_orders(
+async def get_all_payments(
     service: Annotated[PaymentService, Depends(get_payment_service)],
 ) -> list[PaymentReadSchema]:
     return await service.get_all_payments()
