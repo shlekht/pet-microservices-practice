@@ -60,5 +60,5 @@ class PaymentService:
         }
 
         await self.broker.event_publish_json(
-            exchange, settings.payment_succeeded_routing_ley, event
+            exchange, settings.payment_succeeded_routing_key, event
         )

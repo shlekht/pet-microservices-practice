@@ -11,6 +11,7 @@ from order_service.infrastructure.database import Base
 class Status(str, enum.Enum):
     PENDING = "PENDING"
     PAID = "PAID"
+    CREATED = "CREATED"
 
 
 class Order(Base):

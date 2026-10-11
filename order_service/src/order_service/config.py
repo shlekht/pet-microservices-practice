@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     RABBITMQ_URL: str
 
     payment_exchange_name: str = "payment.events"
-    payment_succeeded_routing_ley: str = "payment.succeeded"
+    payment_succeeded_routing_key: str = "payment.succeeded"
     payment_queue_name: str = "payment.results"
     PAYMENT_API_URL: str = "http://localhost:8001"
 

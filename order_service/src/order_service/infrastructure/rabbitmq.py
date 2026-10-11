@@ -51,6 +51,6 @@ class RabbitMQ:
     async def start_payments_consume(self, payment_exchange: AbstractExchange):
         if self.connection is not None:
             payment_channel = await self.connection.channel()
-            payment_queue = await payment_channel.declare_queue(settings.payment_queue_name)
-            await payment_queue.bind(payment_exchange, routing_key=settings.payment_succeeded_routing_ley)
+            payment_queue = await payment_channel.declare_queue(settings.payment_queue_name, durable=False, exclusive=True, auto_delete=True)
+            await payment_queue.bind(payment_exchange, routing_key=settings.payment_succeeded_routing_key)
             await payment_queue.consume(self._handle_payment_events)
