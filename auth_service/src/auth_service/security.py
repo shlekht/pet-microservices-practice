@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 import jwt
 from pwdlib import PasswordHash
 
-from auth_service.config import settings
+from auth_service.config import JWT_PRIVATE_KEY, settings
 from auth_service.models import User
 
 password_hash = PasswordHash.recommended()
@@ -22,15 +22,15 @@ def create_access_token(user: User):
     expires_in = now + timedelta(seconds=3600)
 
     payload = {
-        "user_id": user.id,
+        "sub": str(user.id),
         "email": user.email,
         "role": "user",
-        "exp_in": expires_in,
+        "exp": expires_in,
         "iss": "auth-service"
     }
 
     token = jwt.encode(
-        payload=payload, key=settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM
+        payload=payload, key=JWT_PRIVATE_KEY, algorithm=settings.JWT_ALGORITHM
     )
 
     return token
