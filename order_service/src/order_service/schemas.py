@@ -19,3 +19,8 @@ class OrderReadSchema(BaseModel):
     status: Status
     items: list[ItemSchema]
     total_price: int
+
+
+class PaymentCreateSchema(BaseModel):
+    order_id: int
+    total_price: int
