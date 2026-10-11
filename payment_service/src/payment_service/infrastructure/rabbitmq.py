@@ -30,7 +30,7 @@ class RabbitMQ:
     async def declare_payment_exchange(
         self, channel: AbstractChannel, exchange_name: str
     ):
-        await channel.declare_exchange(exchange_name)
+        return await channel.declare_exchange(exchange_name)
 
     async def event_publish_json(
         self, exchange: AbstractExchange, routing_key: str, data: dict
