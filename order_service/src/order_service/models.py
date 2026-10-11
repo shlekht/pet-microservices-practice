@@ -20,6 +20,7 @@ class Order(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     status: Mapped[Status]
     total_price: Mapped[int]
+    user_id: Mapped[int]
 
     items: Mapped[list[dict]] = mapped_column(
         JSONB,

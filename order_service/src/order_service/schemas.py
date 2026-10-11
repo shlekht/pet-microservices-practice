@@ -16,6 +16,7 @@ class OrderReadSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    user_id: int
     status: Status
     items: list[ItemSchema]
     total_price: int
@@ -24,3 +25,8 @@ class OrderReadSchema(BaseModel):
 class PaymentCreateSchema(BaseModel):
     order_id: int
     total_price: int
+
+
+class CurrentUserSchema(BaseModel):
+    id: int
+    email: str

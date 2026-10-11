@@ -4,12 +4,12 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, status
 
 from order_service.config import settings
-from order_service.dependencies import get_order_service
+from order_service.dependencies import get_current_user, get_order_service
 from order_service.http_client import PaymentHTTPClient
 from order_service.infrastructure.database import Base, engine
 from order_service.infrastructure.rabbitmq import RabbitMQ
 from order_service.models import Order
-from order_service.schemas import OrderCreateSchema, OrderReadSchema
+from order_service.schemas import CurrentUserSchema, OrderCreateSchema, OrderReadSchema
 from order_service.service import OrderService
 
 
@@ -55,5 +55,6 @@ async def get_all_orders(
 async def create_order(
     payload: OrderCreateSchema,
     service: Annotated[OrderService, Depends(get_order_service)],
+    current_user: Annotated[CurrentUserSchema, Depends(get_current_user)],
 ) -> OrderReadSchema:
-    return await service.create_order(payload)
+    return await service.create_order(payload=payload, user_id=current_user.id)

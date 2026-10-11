@@ -2,10 +2,13 @@ from collections.abc import AsyncGenerator
 from typing import Annotated
 
 from fastapi import Depends, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from order_service.http_client import PaymentHTTPClient
 from order_service.infrastructure.database import async_session_maker
+from order_service.schemas import CurrentUserSchema
+from order_service.security import decode_access_token
 from order_service.service import OrderService
 
 
@@ -25,3 +28,23 @@ PaymentHTTPClientDependency = Annotated[
 
 async def get_order_service(session: SessionDependency, payment_http_client: PaymentHTTPClientDependency) -> OrderService:
     return OrderService(session, payment_http_client)
+
+
+
+
+bearer_scheme = HTTPBearer()
+
+def get_current_user(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials,
+        Depends(bearer_scheme),
+    ],
+) -> CurrentUserSchema:
+    token = credentials.credentials
+
+    payload = decode_access_token(token)
+
+    return CurrentUserSchema(
+        id=payload["sub"],
+        email=payload["email"]
+    )
