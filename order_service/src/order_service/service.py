@@ -2,13 +2,19 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from order_service.http_client import PaymentHTTPClient
 from order_service.models import Order, Status
-from order_service.schemas import OrderCreateSchema, OrderReadSchema
+from order_service.schemas import (
+    OrderCreateSchema,
+    OrderReadSchema,
+    PaymentCreateSchema,
+)
 
 
 class OrderService:
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession, payment_http_client: PaymentHTTPClient):
         self.session = session
+        self.payment_http_client = payment_http_client
 
     async def get_all_orders(self) -> list[OrderReadSchema]:
         try:
@@ -36,5 +42,10 @@ class OrderService:
             await self.session.rollback()
             print("Create order error: ", e)
             raise
+
+        data_for_payment = PaymentCreateSchema(
+            order_id=order_to_add.id, total_price=order_to_add.total_price
+        )
+        await self.payment_http_client.create_payment(data_for_payment)
 
         return OrderReadSchema.model_validate(order_to_add)
