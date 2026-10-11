@@ -27,13 +27,15 @@ class OrderService:
 
         return [OrderReadSchema.model_validate(order) for order in orders]
 
-    async def create_order(self, payload: OrderCreateSchema) -> OrderReadSchema:
+    async def create_order(
+        self, payload: OrderCreateSchema, user_id: int
+    ) -> OrderReadSchema:
         items = [item.model_dump() for item in payload.items]
 
         total_price = sum(item["price"] for item in items)
 
         order_to_add = Order(
-            status=Status.PENDING, total_price=total_price, items=items
+            status=Status.PENDING, user_id=user_id, total_price=total_price, items=items
         )
         try:
             self.session.add(order_to_add)
